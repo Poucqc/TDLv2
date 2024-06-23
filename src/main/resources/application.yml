@@ -1,1 +1,42 @@
-spring.application.name=TDL2
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+  datasource:
+    url:
+    username:
+    password:
+    driver-class-name:
+
+auth:
+  jwt:
+    issuer: com.jb.tdl2
+    secret: bUjNzWoTn8YF5uHpW7RfJS7yV5mLxQJm8fQzK2BwvzI=
+    accessTokenExpirationTime: 2
+    refreshTokenExpirationTime: 168
+
+oauth2:
+  naver:
+    client_id:
+    client_secret:
+    redirect_url:
+    auth_server_base_url:
+    resource_server_base_url:
+  google:
+    client_id:
+    client_secret:
+    redirect_url:
+    auth_server_base_url:
+    auth_server_token_url:
+    resource_server_base_url:
+  kakao:
+    client_id:
+    client_secret:
+    redirect_url:
+    auth_server_base_url:
+    auth_server_token_url:
+    resource_server_base_url:
