@@ -21,22 +21,21 @@ auth:
 
 oauth2:
   naver:
-    client_id:
-    client_secret:
-    redirect_url:
-    auth_server_base_url:
-    resource_server_base_url:
+    client_id: jg2pdfmUuxH1R7Zl930G
+    client_secret: J5EwcOsX4t
+    redirect_url: http://localhost:8080/login/naver/callback
+    auth_server_base_url: https://nid.naver.com
+    resource_server_base_url: https://openapi.naver.com
   google:
-    client_id:
-    client_secret:
-    redirect_url:
-    auth_server_base_url:
-    auth_server_token_url:
-    resource_server_base_url:
+    client_id: 212577961030-vhotgvaajrahad2gq16k2mlunt1qvgh5.apps.googleusercontent.com
+    client_secret: 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
+    redirect_url: http://localhost:8080/login/google/callback
+    auth_server_base_url: https://accounts.google.com/o/oauth2/auth
+    auth_server_token_url: https://oauth2.googleapis.com/token
+    resource_server_base_url: https://www.googleapis.com
   kakao:
-    client_id:
-    client_secret:
-    redirect_url:
-    auth_server_base_url:
-    auth_server_token_url:
-    resource_server_base_url:
+    client_id: a1563492ac22ef01880fe3450ccc79d1
+    client_secret: OfQzSZXoZllvbHDbg5liOfiPcjRQsAuN
+    redirect_url: http://localhost:8080/login/kakao/callback
+    auth_server_base_url: https://kauth.kakao.com
+    resource_server_base_url: https://kapi.kakao.com
