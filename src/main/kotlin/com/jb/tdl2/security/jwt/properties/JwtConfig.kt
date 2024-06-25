@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component
 
 @Component
 @ConfigurationProperties(prefix = "auth.jwt")
-class JwtConfig(
+data class JwtConfig(
     val issuer: String = "",
     val secret: String = "",
     val accessExpiration: Long = 0,
