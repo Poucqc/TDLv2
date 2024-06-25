@@ -56,6 +56,5 @@ class KakaoOAuthClient(
             .body<KakaoUserInfoResponse>()
             ?: throw InvalidTokenException("kakao")
     }
-    }
 
 }
