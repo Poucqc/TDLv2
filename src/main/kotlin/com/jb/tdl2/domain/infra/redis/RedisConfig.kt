@@ -1,4 +1,4 @@
-package com.jb.tdl2.domain.common.redis
+package com.jb.tdl2.domain.infra.redis
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
