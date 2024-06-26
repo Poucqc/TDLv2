@@ -1,9 +1,6 @@
 package com.jb.tdl2.domain.exception.handler
 
-import com.jb.tdl2.domain.exception.ExpiredTokenException
-import com.jb.tdl2.domain.exception.InvalidTokenException
-import com.jb.tdl2.domain.exception.NoPermissionException
-import com.jb.tdl2.domain.exception.NotFoundException
+import com.jb.tdl2.domain.exception.*
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -33,6 +30,18 @@ class GlobalExceptionHandler {
     @ExceptionHandler(NoPermissionException::class)
     fun handleNoPermissionException(e: NoPermissionException): ResponseEntity<ErrorResponse> {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
+            .body(ErrorResponse(e.message))
+    }
+
+    @ExceptionHandler(DuplicateEntityException::class)
+    fun handleDuplicateEntityException(e: DuplicateEntityException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+            .body(ErrorResponse(e.message))
+    }
+
+    @ExceptionHandler(NotMatchException::class)
+    fun handleNotMatchException(e: NotMatchException): ResponseEntity<ErrorResponse> {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(ErrorResponse(e.message))
     }
 }
