@@ -1,6 +1,5 @@
 package com.jb.tdl2.domain.auth.client
 
-import com.jb.tdl2.domain.auth.dto.TokenResponse
 import com.jb.tdl2.domain.auth.dto.UserInfoResponse
 
 interface OAuthClient {

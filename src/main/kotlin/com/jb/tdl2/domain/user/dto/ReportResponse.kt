@@ -1,7 +1,7 @@
 package com.jb.tdl2.domain.user.dto
 
 import com.jb.tdl2.domain.user.model.Report
-import java.util.Date
+import java.util.*
 
 data class ReportResponse(
     val reportId: Long,

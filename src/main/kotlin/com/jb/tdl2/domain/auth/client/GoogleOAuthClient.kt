@@ -2,7 +2,6 @@ package com.jb.tdl2.domain.auth.client
 
 import com.jb.tdl2.domain.auth.dto.GoogleUserInfoResponse
 import com.jb.tdl2.domain.auth.dto.TokenResponse
-import com.jb.tdl2.domain.auth.dto.UserInfoResponse
 import com.jb.tdl2.domain.auth.properties.google.GoogleConfig
 import com.jb.tdl2.domain.exception.InvalidTokenException
 import org.springframework.http.HttpStatusCode

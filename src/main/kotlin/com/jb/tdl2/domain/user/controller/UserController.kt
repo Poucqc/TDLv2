@@ -1,6 +1,5 @@
 package com.jb.tdl2.domain.user.controller
 
-import com.jb.tdl2.domain.auth.dto.TokenResponse
 import com.jb.tdl2.domain.user.dto.*
 import com.jb.tdl2.domain.user.service.UserService
 import com.jb.tdl2.security.CustomAuth
