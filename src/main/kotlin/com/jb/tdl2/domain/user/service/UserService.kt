@@ -14,6 +14,8 @@ interface UserService {
 
     fun registerUserIfAbsent(userInfo: UserInfoResponse, provider: String): UserResponse
 
+    fun getMyProfile(currentId: Long): MyProfileResponse
+
     fun getProfile(userId: Long): ProfileResponse
 
     fun profileUpdate(request: ProfileUpdateRequest, currentId: Long): UserResponse
@@ -27,5 +29,6 @@ interface UserService {
     fun unfollowUser(userId: Long, currentId: Long): FollowResponse
 
     fun reportUser(userId: Long, currentId: Long): ReportResponse
+
 
 }

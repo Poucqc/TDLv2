@@ -9,5 +9,4 @@ import jakarta.persistence.Table
 class Follow (
     @EmbeddedId
     val id: FollowId,
-
 )
