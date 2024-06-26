@@ -30,4 +30,8 @@ class PostServiceImpl: PostService {
     override fun searchPosts(request: SearchPostRequest, pageable: Pageable): List<PostListResponse> {
         TODO("Not yet implemented")
     }
+
+    override fun likeToPost(currentId: Long, postId: Long): PostResponse {
+        TODO("Not yet implemented")
+    }
 }

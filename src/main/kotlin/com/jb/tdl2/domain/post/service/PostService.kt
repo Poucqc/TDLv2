@@ -21,4 +21,6 @@ interface PostService {
     fun getPost(postId: Long): PostResponse
 
     fun searchPosts(request: SearchPostRequest, pageable: Pageable): List<PostListResponse>
+
+    fun likeToPost(currentId: Long, postId: Long): PostResponse
 }
