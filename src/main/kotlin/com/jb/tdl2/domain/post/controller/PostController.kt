@@ -77,4 +77,14 @@ class PostController(
         return ResponseEntity.status(HttpStatus.OK)
             .body(postService.searchPosts(request, pageable))
     }
+
+    @CustomAuth(roles = ["user"])
+    @PatchMapping("/like/{post-id}")
+    fun likeToPost(
+        @PathVariable("post-id") postId: Long,
+    ): ResponseEntity<PostResponse> {
+        val currentId = getCurrentId()
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(postService.likeToPost(currentId, postId))
+    }
 }
