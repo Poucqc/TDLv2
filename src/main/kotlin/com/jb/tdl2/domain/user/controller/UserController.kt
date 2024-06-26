@@ -1,5 +1,6 @@
 package com.jb.tdl2.domain.user.controller
 
+import com.jb.tdl2.domain.auth.dto.TokenResponse
 import com.jb.tdl2.domain.user.dto.*
 import com.jb.tdl2.domain.user.service.UserService
 import com.jb.tdl2.security.CustomAuth
@@ -7,6 +8,7 @@ import com.jb.tdl2.security.GetCurrentId.getCurrentId
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
 
@@ -27,10 +29,20 @@ class UserController(
 
     @PostMapping("/register")
     fun register(
-        @RequestBody request: RegisterRequest,
+        @RequestBody @Validated request: RegisterRequest,
     ): ResponseEntity<UserResponse> {
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(userService.register(request))
+    }
+
+    @CustomAuth(roles = ["user"])
+    @PostMapping("/register/verify-email")
+    fun verifyEmail(
+        @RequestParam verifyCode: String
+    ): ResponseEntity<UserResponse> {
+        val currentId = getCurrentId()
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(userService.verifyEmail(currentId, verifyCode))
     }
 
     @CustomAuth(roles = ["user"])
@@ -43,14 +55,23 @@ class UserController(
     }
 
     @CustomAuth(roles = ["user"])
-    @PutMapping("/update")
+    @PutMapping("/update/profile")
     fun profileUpdate(
-        @RequestParam password: String,
-        @RequestBody request: ProfileUpdateRequest,
+        @RequestBody @Validated request: ProfileUpdateRequest,
     ): ResponseEntity<UserResponse> {
         val currentId = getCurrentId()
         return ResponseEntity.status(HttpStatus.OK)
-            .body(userService.profileUpdate(password, request, currentId))
+            .body(userService.profileUpdate(request, currentId))
+    }
+
+    @CustomAuth(roles = ["user"])
+    @PutMapping("/update/password")
+    fun updatePassword(
+        @RequestBody @Validated request: PasswordChangeRequest
+    ): ResponseEntity<UserResponse> {
+        val currentId = getCurrentId()
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(userService.passwordChange(request, currentId))
     }
 
     @CustomAuth(roles = ["user"])
@@ -88,11 +109,11 @@ class UserController(
     @PatchMapping("/report/{userId}")
     fun reportUser(
         @PathVariable userId: Long,
-    ): ResponseEntity<Unit> {
+    ): ResponseEntity<ReportResponse> {
         val currentId = getCurrentId()
         userService.reportUser(userId, currentId)
         return ResponseEntity.status(HttpStatus.OK)
-            .build()
+            .body(userService.reportUser(userId, currentId))
     }
 
 }
