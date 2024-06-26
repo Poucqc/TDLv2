@@ -1,10 +1,8 @@
 package com.jb.tdl2.domain.auth.service
 
-import com.jb.tdl2.domain.auth.client.GoogleOAuthClient
-import com.jb.tdl2.domain.auth.client.KakaoOAuthClient
-import com.jb.tdl2.domain.auth.client.NaverOAuthClient
 import com.jb.tdl2.domain.auth.client.OAuthClient
 import com.jb.tdl2.domain.auth.dto.TokenResponse
+import com.jb.tdl2.domain.user.service.UserService
 import com.jb.tdl2.security.jwt.JwtPlugin
 import java.security.InvalidParameterException
 

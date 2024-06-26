@@ -1,6 +1,5 @@
 package com.jb.tdl2.security.jwt
 
-import com.jb.tdl2.domain.exception.InvalidTokenException
 import com.jb.tdl2.security.jwt.properties.JwtConfig
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jws

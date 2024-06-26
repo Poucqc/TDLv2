@@ -3,14 +3,11 @@ package com.jb.tdl2.domain.user.controller
 import com.jb.tdl2.domain.user.dto.*
 import com.jb.tdl2.domain.user.service.UserService
 import com.jb.tdl2.security.CustomAuth
-import com.jb.tdl2.security.GetCurrentId
 import com.jb.tdl2.security.GetCurrentId.getCurrentId
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.context.request.RequestContextHolder
-import org.springframework.web.context.request.ServletRequestAttributes
 
 
 @RestController
