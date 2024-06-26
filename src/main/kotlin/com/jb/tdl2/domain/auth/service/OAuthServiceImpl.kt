@@ -14,18 +14,18 @@ class OAuthServiceImpl(
     private val jwtPlugin: JwtPlugin
 ) : OAuthService {
     override fun getLoginPage(provider: String): String {
-        val providerToLowerCase = provider.lowercase()
-        return oauthClient["${providerToLowerCase}OAuthClient"]?.generateLoginPage()
+        val providerName = provider.lowercase()
+        return oauthClient["${providerName}OAuthClient"]?.generateLoginPage()
             ?: throw InvalidParameterException("invalid provider")
     }
 
     override fun loginCallback(provider: String, code: String): TokenResponse {
-        val providerToLowerCase = provider.lowercase()
-        return oauthClient["${providerToLowerCase}OAuthClient"]?.getAccessToken(code)
-            ?.let { oauthClient["${providerToLowerCase}OAuthClient"]?.retrieveUserInfo(it) }
-            .let { userService.registerUserIfAbsent(it, providerToLowerCase) }
+        val providerName = provider.lowercase()
+        return oauthClient["${providerName}OAuthClient"]?.getAccessToken(code)
+            ?.let { oauthClient["${providerName}OAuthClient"]?.retrieveUserInfo(it) }
+            .let { userService.registerUserIfAbsent(it, providerName) }
             .let { jwtPlugin.generateAccessToken(it.id!!, it.email!!, "User") }
-            ?: throw RuntimeException("$providerToLowerCase login fail")
+            ?: throw RuntimeException("$providerName login fail")
     }
 
     // 좀 더 읽기 쉽게 외부 함수로 provider 구분
