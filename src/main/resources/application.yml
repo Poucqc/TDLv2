@@ -11,6 +11,11 @@ spring:
     username:
     password:
     driver-class-name:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
 
 auth:
   jwt:
