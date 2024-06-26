@@ -1,5 +1,5 @@
 package com.jb.tdl2.domain.exception
 
 data class InvalidTokenException(
-    val provider: String?,
-) : RuntimeException("$provider token is not invalid.")
+    val reaseon: String?,
+) : RuntimeException("$reaseon token is not invalid.")
