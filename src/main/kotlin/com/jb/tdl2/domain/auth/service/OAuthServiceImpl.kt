@@ -21,8 +21,9 @@ class OAuthServiceImpl(
         val providerName = provider.lowercase()
         return oauthClient["${providerName}OAuthClient"]?.getAccessToken(code)
             ?.let { oauthClient["${providerName}OAuthClient"]?.retrieveUserInfo(it) }
-            .let { userService.registerUserIfAbsent(it, providerName) }
-            .let { jwtPlugin.generateAccessToken(it.id!!, it.email!!, "User") }
+            ?.let { userService.registerUserIfAbsent(it, providerName) }
+            ?.let { jwtPlugin.generateAccessToken(it.id, "User") }
+            ?.let { TokenResponse(it)}
             ?: throw RuntimeException("$providerName login fail")
     }
 
