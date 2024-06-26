@@ -4,7 +4,6 @@ import com.jb.tdl2.domain.post.dto.PostListResponse
 import com.jb.tdl2.domain.post.dto.PostResponse
 import com.jb.tdl2.domain.post.dto.SearchPostRequest
 import com.jb.tdl2.domain.post.dto.UpdatePostRequest
-import com.jb.tdl2.domain.post.model.Post
 import com.jb.tdl2.domain.post.service.PostService
 import com.jb.tdl2.security.CustomAuth
 import com.jb.tdl2.security.GetCurrentId.getCurrentId

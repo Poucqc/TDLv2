@@ -2,7 +2,6 @@ package com.jb.tdl2.domain.user.repository
 
 import com.jb.tdl2.domain.user.model.Follow
 import com.jb.tdl2.domain.user.model.FollowId
-import com.jb.tdl2.domain.user.model.User
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
