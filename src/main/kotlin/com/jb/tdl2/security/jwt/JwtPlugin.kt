@@ -1,5 +1,6 @@
 package com.jb.tdl2.security.jwt
 
+import com.jb.tdl2.domain.exception.InvalidTokenException
 import com.jb.tdl2.security.jwt.properties.JwtConfig
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jws
@@ -23,14 +24,18 @@ class JwtPlugin(
         }
     }
 
-    fun generateAccessToken(subject: String, email: String, role: String): String {
-        return generateToken(subject, email, role, Duration.ofHours(jwtConfig.accessExpiration))
+    fun generateAccessToken(id: Long, role: String): String {
+        return generateToken("access", id, role, Duration.ofHours(jwtConfig.accessExpiration))
+    }
+
+    fun generateRefreshToken(id: Long, role: String): String {
+        return generateToken("refresh", id, role, Duration.ofHours(jwtConfig.refreshExpiration))
     }
 
 
-    private fun generateToken(subject: String, email: String, role: String, duration: Duration): String {
+    private fun generateToken(subject: String, id: Long, role: String, duration: Duration): String {
         val claims = Jwts.claims()
-            .add(mapOf("subject" to subject, "email" to email, "role" to role)).build()
+            .add(mapOf("subject" to subject, "id" to id, "role" to role)).build()
 
         val key = Keys.hmacShaKeyFor(jwtConfig.secret.toByteArray(StandardCharsets.UTF_8))
         val now = Instant.now()
