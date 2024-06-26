@@ -7,5 +7,6 @@ data class PostListResponse(
     val title: String,
     val hashtag: Set<String>,
     val updatedAt: LocalDateTime,
-    val authorName: String
+    val authorName: String,
+    val likesCount: Int,
 )
