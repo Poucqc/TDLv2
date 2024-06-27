@@ -1,4 +1,4 @@
-package com.jb.tdl2.domain.infra.querydsl
+package com.jb.tdl2.infra.querydsl
 
 import com.querydsl.jpa.impl.JPAQueryFactory
 import jakarta.persistence.EntityManager
