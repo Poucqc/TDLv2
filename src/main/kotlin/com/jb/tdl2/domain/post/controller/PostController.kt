@@ -1,9 +1,6 @@
 package com.jb.tdl2.domain.post.controller
 
-import com.jb.tdl2.domain.post.dto.PostListResponse
-import com.jb.tdl2.domain.post.dto.PostResponse
-import com.jb.tdl2.domain.post.dto.SearchPostRequest
-import com.jb.tdl2.domain.post.dto.UpdatePostRequest
+import com.jb.tdl2.domain.post.dto.*
 import com.jb.tdl2.domain.post.service.PostService
 import com.jb.tdl2.security.CustomAuth
 import com.jb.tdl2.security.GetCurrentId.getCurrentId
@@ -34,11 +31,12 @@ class PostController(
     @PutMapping("/{post-id}")
     fun updatePost(
         @PathVariable("post-id") postId: Long,
-        @RequestBody @Validated request: UpdatePostRequest
+        @RequestBody @Validated request: UpdatePostRequest,
+        pageable: Pageable
     ): ResponseEntity<PostResponse> {
         val currentId = getCurrentId()
         return ResponseEntity.status(HttpStatus.OK)
-            .body(postService.updatePost(postId, currentId, request))
+            .body(postService.updatePost(postId, currentId, request, pageable))
     }
 
     @CustomAuth(roles = ["user"])
@@ -64,9 +62,10 @@ class PostController(
     @GetMapping("/{post-id}")
     fun getPost(
         @PathVariable("post-id") postId: Long,
+        pageable: Pageable,
     ): ResponseEntity<PostResponse> {
         return ResponseEntity.status(HttpStatus.OK)
-            .body(postService.getPost(postId))
+            .body(postService.getPost(postId, pageable))
     }
 
     @GetMapping("/search=?")
@@ -80,11 +79,11 @@ class PostController(
 
     @CustomAuth(roles = ["user"])
     @PatchMapping("/like/{post-id}")
-    fun likeToPost(
+    fun toggleLike(
         @PathVariable("post-id") postId: Long,
-    ): ResponseEntity<PostResponse> {
+    ): ResponseEntity<LikeResponse> {
         val currentId = getCurrentId()
         return ResponseEntity.status(HttpStatus.OK)
-            .body(postService.likeToPost(currentId, postId))
+            .body(postService.toggleLike(currentId, postId))
     }
 }
