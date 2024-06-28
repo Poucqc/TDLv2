@@ -1,5 +1,7 @@
 package com.jb.tdl2.domain.post.model
 
+import com.jb.tdl2.domain.comment.dto.CommentResponse
+import com.jb.tdl2.domain.post.dto.PostResponse
 import com.jb.tdl2.domain.user.model.User
 import jakarta.persistence.*
 import java.time.LocalDateTime
@@ -8,19 +10,19 @@ import java.time.LocalDateTime
 @Table(name = "posts")
 class Post(
     @Column(name = "title")
-    var title: String,
+    private var title: String,
 
     @Column(name = "content")
-    var content: String,
+    private var content: String,
 
     @Column(name = "create_time")
-    val createdAt: LocalDateTime,
+    private val createdAt: LocalDateTime,
 
     @Column(name = "update_time")
-    var updatedAt: LocalDateTime,
+    private var updatedAt: LocalDateTime,
 
     @Column(name = "view_count")
-    var viewCount: Int,
+    private var viewCount: Int,
 
     @ManyToMany()
     @JoinTable(
@@ -28,18 +30,55 @@ class Post(
         joinColumns = [JoinColumn(name = "post_id")],
         inverseJoinColumns = [JoinColumn(name = "hashtag_id")]
     )
-    val hashtags: MutableSet<Hashtag> = mutableSetOf(),
+    private var hashtags: MutableSet<Hashtag> = mutableSetOf(),
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    val user: User,
+    private val user: User,
 
     @Column(name = "banned")
-    val isBanned: Boolean,
+    private var isBanned: Boolean,
 
     @Column(name = "deleted")
-    val isDeleted: Boolean,
+    private var isDeleted: Boolean,
 ) {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
+
+    fun toResponse(comments: List<CommentResponse>, likesCount: Int): PostResponse {
+        return PostResponse(
+            id = this.id!!,
+            title = this.title,
+            content = this.content,
+            updatedAt = this.updatedAt,
+            hashtag = this.hashtags,
+            comments = comments,
+            authorId = this.user.id!!,
+            authorName = this.user.nickname,
+            likesCount = likesCount,
+            viewCount = this.viewCount,
+        )
+    }
+
+    fun updatePost(title: String, content: String, hashtags: MutableSet<Hashtag>) {
+        this.title = title
+        this.content = content
+        this.hashtags = hashtags
+        updatedAt = LocalDateTime.now()
+    }
+
+    fun softDeletePost() {
+        this.isDeleted = true
+        //나중에 logger 로 변경
+        println("${this.id} post successfully deleted")
+    }
+
+    fun isBanned(): Boolean = this.isBanned
+
+    fun isDeleted(): Boolean = this.isDeleted
+
+    fun isMyPost(currentId: Long): Boolean {
+        return this.user.id == currentId
+    }
+
 }
