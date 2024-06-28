@@ -155,7 +155,6 @@ class UserServiceImpl(
         userRepository.save(user)
     }
 
-    @Transactional
     override fun followUser(userId: Long, currentId: Long): FollowResponse {
         val follower = userRepository.findByIdOrNull(currentId)
             ?: throw NotFoundException("user not found by user : $currentId")
