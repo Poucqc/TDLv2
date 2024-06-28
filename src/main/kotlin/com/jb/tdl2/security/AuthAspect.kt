@@ -85,8 +85,8 @@ class CustomAuthAspect(
                     decodedRefreshToken.payload["id"].toString().toLong(),
                     decodedRefreshToken.payload["role"].toString()
                 )
-                jwtPlugin.validateToken(newAccessToken).onSuccess { decodedAccessToken ->
-                    return decodedAccessToken
+                jwtPlugin.validateToken(newAccessToken).onSuccess { decodedNewAccessToken ->
+                    return decodedNewAccessToken
                 }.onFailure {
                     throw InvalidTokenException("access")
                 }
