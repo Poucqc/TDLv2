@@ -1,9 +1,7 @@
 package com.jb.tdl2.domain.post.dto
 
 import com.jb.tdl2.domain.comment.dto.CommentResponse
-import com.jb.tdl2.domain.comment.model.Comment
 import com.jb.tdl2.domain.post.model.Hashtag
-import com.jb.tdl2.domain.post.model.Post
 import java.time.LocalDateTime
 
 data class PostResponse(
