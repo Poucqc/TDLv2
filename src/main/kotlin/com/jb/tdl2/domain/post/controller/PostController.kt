@@ -54,9 +54,10 @@ class PostController(
     @GetMapping("/list")
     fun getPostList(
         pageable: Pageable,
-    ): ResponseEntity<List<PostListResponse>> {
+        @ModelAttribute @Validated cursor: CursorRequest
+    ): ResponseEntity<CursorPageResponse> {
         return ResponseEntity.status(HttpStatus.OK)
-            .body(postService.getPostsList(pageable))
+            .body(postService.getPostsList(pageable, cursor))
     }
 
     @GetMapping("/{post-id}")
@@ -72,9 +73,10 @@ class PostController(
     fun searchPosts(
         @ModelAttribute request: SearchPostRequest,
         pageable: Pageable,
+        @RequestParam orderBy: String,
     ): ResponseEntity<List<PostListResponse>> {
         return ResponseEntity.status(HttpStatus.OK)
-            .body(postService.searchPosts(request, pageable))
+            .body(postService.searchPosts(request, pageable, orderBy))
     }
 
     @CustomAuth(roles = ["user"])
