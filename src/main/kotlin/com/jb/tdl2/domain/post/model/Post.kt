@@ -24,15 +24,7 @@ class Post(
     @Column(name = "view_count")
     private var viewCount: Int,
 
-    @ManyToMany()
-    @JoinTable(
-        name = "post_hashtag",
-        joinColumns = [JoinColumn(name = "post_id")],
-        inverseJoinColumns = [JoinColumn(name = "hashtag_id")]
-    )
-    private var hashtags: MutableSet<Hashtag> = mutableSetOf(),
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private val user: User,
 
@@ -45,13 +37,14 @@ class Post(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
 
-    fun toResponse(comments: List<CommentResponse>, likesCount: Int): PostResponse {
+    fun toResponse(comments: List<CommentResponse>, likesCount: Int, hashtags: MutableSet<Hashtag>): PostResponse {
         return PostResponse(
             id = this.id!!,
             title = this.title,
             content = this.content,
+            createdAt = this.createdAt,
             updatedAt = this.updatedAt,
-            hashtag = this.hashtags,
+            hashtag = hashtags,
             comments = comments,
             authorId = this.user.id!!,
             authorName = this.user.nickname,
@@ -60,10 +53,9 @@ class Post(
         )
     }
 
-    fun updatePost(title: String, content: String, hashtags: MutableSet<Hashtag>) {
+    fun updatePost(title: String, content: String) {
         this.title = title
         this.content = content
-        this.hashtags = hashtags
         updatedAt = LocalDateTime.now()
     }
 
