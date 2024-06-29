@@ -115,7 +115,7 @@ class PostServiceImpl(
 
     private fun findAllComments(postId: Long, pageable: Pageable): List<CommentResponse> {
         val comments = commentRepository.findAllByPostId(postId, pageable)
-        return comments.map { it.toResponse() }
+        return comments.map { it.toResponse(it.getUser().getNickname()) }
     }
 
     private fun countLikes(postId: Long): Int {
@@ -138,8 +138,7 @@ class PostServiceImpl(
     }
 
     private fun getAuthorNameByPost(post: Post): String {
-        val authorId = post.getAuthorId()
-        val author = userRepository.findByIdOrNull(authorId) ?: throw NotFoundException("User not found")
+        val author = post.getAuthor()
         return author.getNickname()
     }
 
