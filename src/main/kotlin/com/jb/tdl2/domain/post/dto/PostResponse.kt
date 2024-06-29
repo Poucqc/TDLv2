@@ -8,6 +8,7 @@ data class PostResponse(
     val id: Long,
     val title: String,
     val content: String,
+    val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime,
     val hashtag: MutableSet<Hashtag>,
     val comments: List<CommentResponse>,
