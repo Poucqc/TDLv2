@@ -1,6 +1,7 @@
 package com.jb.tdl2.domain.user.model
 
 import com.jb.tdl2.domain.exception.NoPermissionException
+import com.jb.tdl2.domain.exception.NotFoundException
 import com.jb.tdl2.domain.exception.NotMatchException
 import com.jb.tdl2.security.PasswordUtils
 import com.jb.tdl2.security.PasswordUtils.hashPassword
@@ -51,7 +52,7 @@ class User(
 
     fun validDeletedUser() {
         if(this.isDeleted) {
-            throw NoPermissionException("deleted user")
+            throw NotFoundException("deleted user")
         }
     }
 
