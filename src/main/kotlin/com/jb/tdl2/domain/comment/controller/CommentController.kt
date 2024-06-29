@@ -2,7 +2,6 @@ package com.jb.tdl2.domain.comment.controller
 
 import com.jb.tdl2.domain.comment.dto.CommentResponse
 import com.jb.tdl2.domain.comment.dto.UpdateCommentRequest
-import com.jb.tdl2.domain.comment.repository.CommentRepository
 import com.jb.tdl2.domain.comment.service.CommentService
 import com.jb.tdl2.security.CustomAuth
 import com.jb.tdl2.security.GetCurrentId.getCurrentId
