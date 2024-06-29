@@ -37,7 +37,7 @@ class Post(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
 
-    fun toResponse(comments: List<CommentResponse>, likesCount: Int, hashtags: MutableSet<Hashtag>): PostResponse {
+    fun toResponse(comments: List<CommentResponse>, likesCount: Int, hashtags: MutableSet<Hashtag>, username: String): PostResponse {
         return PostResponse(
             id = this.id!!,
             title = this.title,
@@ -47,7 +47,7 @@ class Post(
             hashtag = hashtags,
             comments = comments,
             authorId = this.user.id!!,
-            authorName = this.user.nickname,
+            authorName = username,
             likesCount = likesCount,
             viewCount = this.viewCount,
         )
@@ -72,5 +72,7 @@ class Post(
     fun isMyPost(currentId: Long): Boolean {
         return this.user.id == currentId
     }
+
+    fun getAuthorId() = this.user.id
 
 }

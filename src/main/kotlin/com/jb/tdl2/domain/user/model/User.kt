@@ -41,7 +41,7 @@ class User(
     ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null
+    val id: Long? = null
 
     fun validOAuthLoginUser() {
         if(this.provider != null) {
@@ -66,6 +66,8 @@ class User(
     fun isDeleted() = this.isDeleted
 
     fun getEmail() = this.email
+
+    fun getNickname() = this.nickname
 
     fun toggleBanStatus()  {
         this.isBanned = !this.isBanned
