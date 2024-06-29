@@ -5,8 +5,8 @@ import java.time.LocalDateTime
 data class PostListResponse(
     val id: Long,
     val title: String,
-    val hashtag: Set<String>,
-    val updatedAt: LocalDateTime,
+    val hashtag: List<String>,
+    val createdAt: LocalDateTime,
     val authorName: String,
     val likesCount: Int,
 )
