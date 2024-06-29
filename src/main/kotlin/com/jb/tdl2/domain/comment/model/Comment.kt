@@ -20,11 +20,11 @@ class Comment(
     @Column(name = "updated_at")
     var updatedAt: LocalDateTime,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     val user: User,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
     val post: Post,
 ) {
