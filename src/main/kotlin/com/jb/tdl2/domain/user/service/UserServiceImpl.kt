@@ -2,7 +2,6 @@ package com.jb.tdl2.domain.user.service
 
 import com.jb.tdl2.domain.auth.dto.UserInfoResponse
 import com.jb.tdl2.domain.exception.DuplicateEntityException
-import com.jb.tdl2.domain.exception.NoPermissionException
 import com.jb.tdl2.domain.exception.NotFoundException
 import com.jb.tdl2.domain.exception.NotMatchException
 import com.jb.tdl2.domain.user.dto.*
@@ -14,7 +13,6 @@ import com.jb.tdl2.domain.user.repository.FollowRepository
 import com.jb.tdl2.domain.user.repository.ReportRepository
 import com.jb.tdl2.domain.user.repository.UserRepository
 import com.jb.tdl2.security.PasswordUtils.hashPassword
-import com.jb.tdl2.security.PasswordUtils.verifyPassword
 import com.jb.tdl2.security.jwt.JwtPlugin
 import com.jb.tdl2.security.verifyEmail.RedisVerifyEmail
 import jakarta.transaction.Transactional
@@ -36,11 +34,10 @@ class UserServiceImpl(
     override fun login(request: LoginRequest): LoginResponse {
         val user = userRepository.findByEmail(request.email)
             ?: throw NotFoundException("user not found by email : ${request.email}")
-        validOAuthLoginUser(user)
-        if (!verifyPassword(request.password, user.password!!)) {
-            throw NotMatchException("password")
-        }
-        if (user.isBanned) {
+        user.validOAuthLoginUser()
+        user.validDeletedUser()
+        user.verifyPassword(request.password, "wrong password")
+        if (user.isBanned()) {
             throw BadRequestException("banned user")
         }
         val accessToken = jwtPlugin.generateAccessToken(user.id!!, "user")
@@ -69,7 +66,7 @@ class UserServiceImpl(
                 provider = null,
                 providerId = null,
                 isBanned = true,
-                deleted = false,
+                isDeleted = false,
                 deletedDate = null
             )
         ).let { UserResponse.from(it) }
@@ -78,11 +75,11 @@ class UserServiceImpl(
     override fun verifyEmail(currentId: Long, verifyCode: String): UserResponse {
         val user = userRepository.findByIdOrNull(currentId)
             ?: throw NotFoundException("user not found by currentId : $currentId")
-        val codeInRedis = redisTemplate.opsForValue().get(user.email)
+        val codeInRedis = redisTemplate.opsForValue().get(user.getEmail())
         if (codeInRedis != verifyCode) {
             throw NotMatchException("code")
         }
-        user.isBanned = false
+        user.toggleBanStatus()
         return userRepository.save(user).let { UserResponse.from(it) }
     }
 
@@ -97,7 +94,7 @@ class UserServiceImpl(
                     joinDate = Date.from(Instant.now()),
                     password = null,
                     isBanned = false,
-                    deleted = false,
+                    isDeleted = false,
                     deletedDate = null,
                 )
             ).let { UserResponse.from(it) }
@@ -106,13 +103,14 @@ class UserServiceImpl(
     override fun getMyProfile(currentId: Long): MyProfileResponse {
         val user = userRepository.findByIdOrNull(currentId)
             ?: throw NotFoundException("user not found by currentId : $currentId")
-        val followList = getFollowingUsers(currentId).map{ UserResponse.from(it) }
+        val followList = getFollowingUsers(currentId).map { UserResponse.from(it) }
         return MyProfileResponse.from(user, countFollowers(currentId), followList)
     }
 
     override fun getProfile(userId: Long): ProfileResponse {
         val user = userRepository.findByIdOrNull(userId)
             ?: throw NotFoundException("user : $userId not found")
+        user.validDeletedUser()
         return ProfileResponse.from(user)
     }
 
@@ -120,37 +118,34 @@ class UserServiceImpl(
     override fun profileUpdate(request: ProfileUpdateRequest, currentId: Long): UserResponse {
         val user = userRepository.findByIdOrNull(currentId)
             ?: throw NotFoundException("Not found current user : $currentId")
-        user.nickname = request.nickname
+        user.validDeletedUser()
+        user.changeNickname(request.nickname)
         return UserResponse.from(user)
     }
 
     override fun passwordChange(request: PasswordChangeRequest, currentId: Long): UserResponse {
         val user = userRepository.findByIdOrNull(currentId)
             ?: throw NotFoundException("Not found current user : $currentId")
-        validOAuthLoginUser(user)
-        if (!verifyPassword(request.currentPassword, user.password!!)) {
-            throw NotMatchException("password")
-        }
+        user.validOAuthLoginUser()
+        user.validDeletedUser()
+        user.verifyPassword(request.currentPassword, "wrong password")
         if (request.newPassword != request.newPasswordConfirmation) {
-            throw NotMatchException("password confirmation")
+            throw NotMatchException("password confirmation not match")
         }
-        if (verifyPassword(request.newPassword, user.password!!)) {
-            throw DuplicateEntityException("password")
-        }
-        user.password = hashPassword(request.newPassword)
+        user.verifyPassword(request.newPassword, "new password must different with past password")
+        user.changePassword(request.newPassword)
         return UserResponse.from(user)
     }
 
     override fun unregister(currentId: Long, password: String) {
         val user = userRepository.findByIdOrNull(currentId)
             ?: throw NotFoundException("user not found by user : $currentId")
-        if (user.provider == null) {
-            if (!verifyPassword(password, user.password!!)) {
-                throw NotMatchException("password")
-            }
-        }
-        user.deleted = true
-        user.deletedDate = Date.from(Instant.now())
+        user.validOAuthLoginUser()
+        user.validDeletedUser()
+        user.verifyPassword(password, "wrong password")
+
+        user.toggleDeleteStatus()
+        user.changeDeletedDate(Date.from(Instant.now()))
 
         userRepository.save(user)
     }
@@ -181,10 +176,12 @@ class UserServiceImpl(
 
     override fun reportUser(userId: Long, currentId: Long): ReportResponse {
         checkReportDuplicate(currentId, userId)
+        val currentUser: User = userRepository.findByIdOrNull(currentId) ?: throw NotFoundException("user not found by currentId : $currentId")
+        val reportedUser: User = userRepository.findByIdOrNull(currentId) ?: throw NotFoundException("user not found by userId : $userId")
         return reportRepository.save(
             Report(
-                reportId = currentId,
-                reportedId = userId,
+                reportUser = currentUser,
+                reportedUser = reportedUser,
                 reportDate = Date.from(Instant.now()),
             )
         ).let { ReportResponse.from(it) }
@@ -211,11 +208,6 @@ class UserServiceImpl(
         }
     }
 
-    private fun validOAuthLoginUser(user: User) {
-        if (user.provider != null) {
-            throw NoPermissionException("login to social login user")
-        }
-    }
 
     private fun countFollowers(userId: Long): Int {
         return followRepository.countByUserId(userId)
