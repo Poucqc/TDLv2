@@ -44,6 +44,14 @@ class UserController(
             .body(userService.verifyEmail(currentId, verifyCode))
     }
 
+    @CustomAuth(roles=["user"])
+    @GetMapping("/my-profile")
+    fun getMyProfile(): ResponseEntity<MyProfileResponse> {
+        val currentId = getCurrentId()
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(userService.getMyProfile(currentId))
+    }
+
     @CustomAuth(roles = ["user"])
     @GetMapping("/profile/{userId}")
     fun getProfile(

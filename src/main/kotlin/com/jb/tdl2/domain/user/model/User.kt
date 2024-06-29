@@ -34,9 +34,6 @@ class User(
     @Column(name = "deleted_at")
     var deletedDate: Date? = null,
 
-    @Column(nullable = false, name = "report_count")
-    var reportCount: Int = 0,
-
     ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

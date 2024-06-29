@@ -103,6 +103,13 @@ class UserServiceImpl(
             ).let { UserResponse.from(it) }
     }
 
+    override fun getMyProfile(currentId: Long): MyProfileResponse {
+        val user = userRepository.findByIdOrNull(currentId)
+            ?: throw NotFoundException("user not found by currentId : $currentId")
+        val followList = getFollowingUsers(currentId).map{ UserResponse.from(it) }
+        return MyProfileResponse.from(user, countFollowers(currentId), followList)
+    }
+
     override fun getProfile(userId: Long): ProfileResponse {
         val user = userRepository.findByIdOrNull(userId)
             ?: throw NotFoundException("user : $userId not found")
@@ -148,7 +155,6 @@ class UserServiceImpl(
         userRepository.save(user)
     }
 
-    @Transactional
     override fun followUser(userId: Long, currentId: Long): FollowResponse {
         val follower = userRepository.findByIdOrNull(currentId)
             ?: throw NotFoundException("user not found by user : $currentId")
@@ -209,6 +215,15 @@ class UserServiceImpl(
         if (user.provider != null) {
             throw NoPermissionException("login to social login user")
         }
+    }
+
+    private fun countFollowers(userId: Long): Int {
+        return followRepository.countByUserId(userId)
+    }
+
+    private fun getFollowingUsers(userId: Long): List<User> {
+        val followingUserIds = followRepository.findByFollowerId(userId)
+        return userRepository.findAllById(followingUserIds).toList()
     }
 
 }

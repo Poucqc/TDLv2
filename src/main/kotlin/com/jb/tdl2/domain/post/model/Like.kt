@@ -1,12 +1,12 @@
-package com.jb.tdl2.domain.user.model
+package com.jb.tdl2.domain.post.model
 
 import jakarta.persistence.EmbeddedId
 import jakarta.persistence.Entity
 import jakarta.persistence.Table
 
 @Entity
-@Table(name = "follow")
-class Follow (
+@Table(name = "likes")
+class Like(
     @EmbeddedId
-    val id: FollowId,
+    val id: LikeId
 )

@@ -7,9 +7,13 @@ import java.util.*
 @Table(name = "report")
 class Report(
 
-    val reportId: Long,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "report_user_id", nullable = false)
+    val reportUser: User,
 
-    val reportedId: Long,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reported_user_id", nullable = false)
+    val reportedUser: User,
 
     val reportDate: Date,
 ) {

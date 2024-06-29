@@ -1,7 +1,7 @@
 package com.jb.tdl2.domain.user.dto
 
 import com.jb.tdl2.domain.user.model.User
-import java.util.Date
+import java.util.*
 
 data class ProfileResponse(
     val nickname: String,
