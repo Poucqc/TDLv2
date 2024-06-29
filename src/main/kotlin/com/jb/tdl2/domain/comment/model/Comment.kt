@@ -11,33 +11,45 @@ import java.time.LocalDateTime
 @Table(name = "comments")
 class Comment(
 
-    @Column(name = "conents")
-    var body: String,
+    @Column(name = "body")
+    private var body: String,
 
     @Column(name = "created_at")
-    val createdAt: LocalDateTime,
+    private val createdAt: LocalDateTime,
 
     @Column(name = "updated_at")
-    var updatedAt: LocalDateTime,
+    private var updatedAt: LocalDateTime,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    val user: User,
+    private val user: User,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
-    val post: Post,
+    private val post: Post,
 ) {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
 
-    fun toResponse(): CommentResponse {
+    fun toResponse(authorName: String): CommentResponse {
         return CommentResponse(
             id = this.id!!,
             authorId = this.user.id!!,
-            authorName = this.user.nickname,
+            authorName = authorName,
             body = this.body,
             updatedAt = this.updatedAt
         )
+    }
+
+    fun getUser() = this.user
+    fun getBody() = this.body
+    fun getCreatedAt() = this.createdAt
+    fun getUpdatedAt() = this.updatedAt
+    fun getPost() = this.post
+    fun getId() = this.id
+
+    fun updatedComment(request: String) {
+        this.body = request
+        this.updatedAt = LocalDateTime.now()
     }
 }
