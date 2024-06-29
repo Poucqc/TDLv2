@@ -30,6 +30,7 @@ class PostServiceImpl(
     override fun createPost(currentId: Long, request: UpdatePostRequest): PostResponse {
         val user = userRepository.findByIdOrNull(currentId)
             ?: throw NotFoundException("Not found current user : $currentId")
+        val username = user.getNickname()
 
         val hashtags = mergeAndSaveHashtags(request.hashtag, hashtagRepository)
         val post = Post(
@@ -45,20 +46,26 @@ class PostServiceImpl(
         postRepository.save(post)
         saveHashtagsInPost(hashtags, post)
 
-        return post.toResponse(comments = emptyList(), likesCount = 0, hashtags = hashtags)
+        return post.toResponse(comments = emptyList(), likesCount = 0, hashtags = hashtags, username)
     }
 
     @Transactional
-    override fun updatePost(postId: Long, currentId: Long, request: UpdatePostRequest, pageable: Pageable): PostResponse {
+    override fun updatePost(
+        postId: Long,
+        currentId: Long,
+        request: UpdatePostRequest,
+        pageable: Pageable
+    ): PostResponse {
         val post = postRepository.findByIdOrNull(postId) ?: throw NotFoundException("Post not found")
         if (post.isMyPost(currentId)) throw NoPermissionException("post. postId: $postId")
 
         val hashtags = mergeAndSaveHashtags(request.hashtag, hashtagRepository)
+        val authorName = getAuthorNameByPost(post)
 
         post.updatePost(request.title, request.content)
         saveHashtagsInPost(hashtags, post)
 
-        return post.toResponse(comments = findAllComments(postId, pageable), likesCount = countLikes(postId), hashtags)
+        return post.toResponse(comments = findAllComments(postId, pageable), likesCount = countLikes(postId), hashtags, authorName)
     }
 
     @Transactional
@@ -84,8 +91,11 @@ class PostServiceImpl(
     override fun getPost(postId: Long, pageable: Pageable): PostResponse {
         val post = postRepository.findByIdOrNull(postId) ?: throw NotFoundException("Post not found")
         if (post.isDeleted()) throw NotFoundException("This post is deleted")
+
         val hashtags = findHashtagsByPostId(postId)
-        return post.toResponse(comments = findAllComments(postId, pageable), likesCount = countLikes(postId), hashtags)
+        val authorName = getAuthorNameByPost(post)
+
+        return post.toResponse(comments = findAllComments(postId, pageable), likesCount = countLikes(postId), hashtags, authorName)
     }
 
     override fun searchPosts(request: SearchPostRequest, pageable: Pageable, orderBy: String): List<PostListResponse> {
@@ -125,6 +135,12 @@ class PostServiceImpl(
             val postHashtag = PostHashtag(post = post, hashtag = hashtag)
             postHashtagRepository.save(postHashtag)
         }
+    }
+
+    private fun getAuthorNameByPost(post: Post): String {
+        val authorId = post.getAuthorId()
+        val author = userRepository.findByIdOrNull(authorId) ?: throw NotFoundException("User not found")
+        return author.getNickname()
     }
 
 }
