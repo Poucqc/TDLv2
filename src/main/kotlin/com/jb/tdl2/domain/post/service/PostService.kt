@@ -13,11 +13,11 @@ interface PostService {
 
     fun deletePost(postId: Long, currentId: Long)
 
-    fun getPostsList(pageable: Pageable): List<PostListResponse>
+    fun getPostsList(pageable: Pageable, cursor: CursorRequest): CursorPageResponse
 
     fun getPost(postId: Long, pageable: Pageable): PostResponse
 
-    fun searchPosts(request: SearchPostRequest, pageable: Pageable): List<PostListResponse>
+    fun searchPosts(request: SearchPostRequest, pageable: Pageable, orderBy: String): List<PostListResponse>
 
     fun toggleLike(currentId: Long, postId: Long): LikeResponse
 }
