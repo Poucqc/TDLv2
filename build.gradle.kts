@@ -41,6 +41,8 @@ dependencies {
     implementation("org.mindrot:jbcrypt:0.4")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation ("org.springframework.boot:spring-boot-starter-mail")
+    implementation("com.amazonaws:aws-java-sdk-s3:1.12.251")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
     kapt("com.querydsl:querydsl-apt:$queryDslVersion:jakarta")
 
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.3")
