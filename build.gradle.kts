@@ -28,6 +28,10 @@ repositories {
 
 val queryDslVersion = "5.0.0"
 
+val kotestVersion = "5.5.5" // 추가!
+
+val mockkVersion = "1.13.8" // 추가!
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-aop")
@@ -55,6 +59,10 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+    testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
+    testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
+    testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.3")
+    testImplementation("io.mockk:mockk:$mockkVersion") // 추가 !!
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
@@ -76,6 +84,7 @@ kotlin {
     }
 }
 
-tasks.withType<Test> {
+tasks.withType<Test>().configureEach() {
     useJUnitPlatform()
 }
+
