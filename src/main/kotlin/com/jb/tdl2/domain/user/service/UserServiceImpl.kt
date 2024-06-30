@@ -208,7 +208,6 @@ class UserServiceImpl(
         }
     }
 
-
     private fun countFollowers(userId: Long): Int {
         return followRepository.countByUserId(userId)
     }

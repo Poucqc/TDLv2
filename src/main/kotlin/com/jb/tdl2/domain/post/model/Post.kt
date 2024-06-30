@@ -1,6 +1,7 @@
 package com.jb.tdl2.domain.post.model
 
 import com.jb.tdl2.domain.comment.dto.CommentResponse
+import com.jb.tdl2.domain.exception.NotFoundException
 import com.jb.tdl2.domain.post.dto.PostResponse
 import com.jb.tdl2.domain.user.model.User
 import jakarta.persistence.*
@@ -65,6 +66,10 @@ class Post(
         println("${this.id} post successfully deleted")
     }
 
+    fun validDeletePost() {
+        if(this.isDeleted) throw NotFoundException("deleted post")
+    }
+
     fun isBanned(): Boolean = this.isBanned
 
     fun isDeleted(): Boolean = this.isDeleted
@@ -73,6 +78,6 @@ class Post(
         return this.user.id == currentId
     }
 
-    fun getAuthorId() = this.user.id
+    fun getAuthor() = this.user
 
 }
