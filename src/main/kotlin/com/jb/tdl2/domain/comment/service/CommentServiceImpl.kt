@@ -12,6 +12,7 @@ import com.jb.tdl2.domain.post.repository.postRepository.PostRepository
 import com.jb.tdl2.domain.user.repository.UserRepository
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.scheduling.annotation.Scheduled
 import java.time.LocalDateTime
 
 class CommentServiceImpl(
@@ -72,6 +73,18 @@ class CommentServiceImpl(
                 deletedTime = LocalDateTime.now(),
             )
         )
+    }
+
+    override fun deleteAllExpiredComment() {
+        val softDeletedComment = deletedCommentRepository.findAll() ?: emptyList()
+        softDeletedComment.map { hardDeleteExpiredSoftDeletedComment(it) }
+    }
+
+    private fun hardDeleteExpiredSoftDeletedComment(deletedComment: DeletedComment) {
+        val expiredDuration = deletedComment.getDeletedTime().plusDays(7)
+        if (expiredDuration > LocalDateTime.now()) {
+            deletedCommentRepository.delete(deletedComment)
+        }
     }
 
 }
