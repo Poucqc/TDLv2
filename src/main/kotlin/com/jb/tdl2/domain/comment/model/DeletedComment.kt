@@ -32,4 +32,6 @@ class DeletedComment(
 ) {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null
+
+    fun getDeletedTime() = this.deletedTime
 }

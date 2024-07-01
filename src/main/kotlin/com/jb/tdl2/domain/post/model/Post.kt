@@ -62,7 +62,6 @@ class Post(
 
     fun softDeletePost() {
         this.isDeleted = true
-        //나중에 logger 로 변경
         println("${this.id} post successfully deleted")
     }
 

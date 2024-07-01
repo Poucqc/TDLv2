@@ -15,6 +15,11 @@ spring:
     redis:
       host: localhost
       port: 6379
+aws:
+  s3:
+    bucket-name:
+    access-key:
+    secret-key:
 
 
 auth:

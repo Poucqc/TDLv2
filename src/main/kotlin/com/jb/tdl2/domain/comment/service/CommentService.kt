@@ -13,4 +13,6 @@ interface CommentService {
 
     fun deleteComment(currentId: Long, postId: Long, commentId: Long)
 
+    fun deleteAllExpiredComment()
+
 }
